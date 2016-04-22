@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="6dp"
+    android:layout_marginTop="5dp"
+    android:paddingTop="8dp"
+    android:gravity="center_horizontal"
+    >
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/register_email"
+        android:ems="10"
+        android:hint="@string/login_email"
+        android:paddingTop="20dp"
+        style="@style/FirebaseEditTextTheme"
+        android:theme="@style/FirebaseEditTextTheme"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/register_password"
+        android:ems="10"
+        android:hint="@string/login_password"
+        android:paddingTop="16dp"
+        style="@style/FirebaseEditTextTheme"
+        android:theme="@style/FirebaseEditTextTheme"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/register_retype_password"
+        android:ems="10"
+        android:hint="@string/login_retype_password"
+        android:paddingTop="16dp"
+        style="@style/FirebaseEditTextTheme"
+        android:theme="@style/FirebaseEditTextTheme"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/register_name"
+        android:ems="10"
+        android:hint="@string/register_name"
+        android:paddingTop="20dp"
+        style="@style/FirebaseEditTextTheme"
+        android:theme="@style/FirebaseEditTextTheme"
+        android:inputType="textPersonName"
+        />
+
+</LinearLayout>

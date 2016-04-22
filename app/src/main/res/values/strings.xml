@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">FirebaseLogin</string>
+
+    <!-- TODO: (Required) Add your Firebase database reference replace YOUR_DATABASE_NAME with the name of your database -->
+    <string name="FIREBASE_BASE_REF">https://YOUR_DATABASE_NAME.firebaseio.com</string>
+
+    <!-- **** Start Firebase login text **** -->
+
+    <!-- fragment_firebase_login.xml -->
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_login">Login</string>
+    <string name="login_or">or</string>
+    <string name="login_facebook">Login with Facebook</string>
+    <string name="login_google">Login with Google</string>
+    <string name="login_twitter">Login with Twitter</string>
+    <string name="login_create">Create Account</string>
+
+    <!-- activity_login.xml -->
+    <string name="login_verify_text">This activity requires you to be logged in.</string>
+    <string name="login_verify_cancel">Cancel</string>
+    <string name="login_verify_login">Login</string>
+
+    <!-- dialog_login_register.xml -->
+    <string name="login_retype_password">Retype Password</string>
+    <string name="register_name">Name (optional)</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">Password must be at least 3 characters long</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_password_retype">Password and password retype are not the same</string>
+
+    <!-- **** End Firebase login text **** -->
+</resources>
