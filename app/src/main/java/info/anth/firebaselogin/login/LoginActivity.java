@@ -12,13 +12,18 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
+import com.google.android.gms.auth.api.Auth;
 
 public class LoginActivity extends FirebaseLoginBaseActivity {
 
@@ -29,6 +34,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     private Firebase mRef;
     private LoginRegisterDialog loginRegisterDialog;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         setContentView(R.layout.activity_login);
 
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
+        context = this;
 
         // set login button listener
         Button buttonLogin = (Button) findViewById(R.id.activity_login);
@@ -73,8 +80,11 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     public void onFirebaseLoggedIn(AuthData authData) {
         if(LOG_SHOW) Log.i(LOG_TAG, "Logged in using " + authData.getProvider());
 
-        //returned data
+        // returned data
         if(LOG_SHOW) Log.i(LOG_TAG, "Login data: " + authData.toString());
+
+        // add user to database
+        checkForUser(authData);
 
         // Check for intent for result (if called by startActivity getCallingActivity is null, called by startActivityForResult is NOT null)
         if (getCallingActivity() != null) {
@@ -137,4 +147,49 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         finish();
     }
 
+    public void checkForUser(final AuthData authData) {
+        // Check to see if they exist
+        mRef.child("users").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
+
+                if (dbUserInfo == null) {
+                    // user does not exist - create user
+                    addUserInfo(authData);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                // there was an error
+                CharSequence text = firebaseError.getMessage();
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.CENTER,0,0);
+                toast.show();
+            }
+        });
+    }
+
+    public void addUserInfo(AuthData authData) {
+        //TODO: (Optional) Update for any new fields added to DbUserInfo class
+
+        // set user id
+        String uid = authData.getUid();
+
+        // create record
+        String provider = authData.getProvider();
+        String email = "Not provided by user";
+        String profileImageUrl = "Not provided by user";
+        String displayName = "Not provided by user";
+
+        if(authData.getProviderData().containsKey("email")) email = authData.getProviderData().get("email").toString();
+        if(authData.getProviderData().containsKey("profileImageURL")) profileImageUrl = authData.getProviderData().get("profileImageURL").toString();
+        if(authData.getProviderData().containsKey("displayName")) displayName = authData.getProviderData().get("displayName").toString();
+
+        DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
+        mRef.child("users").child(uid).setValue(newUserInfo);
+    }
 }
