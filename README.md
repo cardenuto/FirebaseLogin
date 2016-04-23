@@ -11,6 +11,7 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 <br>[Using the code](https://github.com/cardenuto/FirebaseLogin#using-the-code)
 <br>[Structure/UI](https://github.com/cardenuto/FirebaseLogin#structureui)
 <br>[Dependencies](https://github.com/cardenuto/FirebaseLogin#dependencies)
+<br>[License](https://github.com/cardenuto/FirebaseLogin#license)
 
 ##Branches
 [Example-Basic](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
@@ -104,5 +105,11 @@ Firebase
 
 Google Authentication
 <br>com.google.android.gms:play-services-auth:8.4.0
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
+
+##License
+
+[The MIT License (MIT) Copyright (c) 2016 cardenuto](https://github.com/cardenuto/FirebaseLogin/blob/master/LICENSE)
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
