@@ -4,8 +4,12 @@ Here are the steps to implement this code into your project. You will need to co
 The steps are listed as if you were starting an empty project, they will be similar if they are being added to an existing project. 
 However, you may need to adjust this code based on existing library versions, or classes/strings/styles you created with the same names.
 
-##Pre-Setup
-There are a number of steps that need to be taken extermal of Android Studio in order to use Firebase Login for Password and Google authentication. 
+<hr>
+
+##External Setup
+There are a number of steps that need to be taken external of Android Studio in order to use Firebase Login for Password and Google authentication. [I've listed these step at the bottom of this document.](https://github.com/cardenuto/FirebaseLogin/blob/master/SETUP.md#external-setup-details)
+
+<hr>
 
 ##Step 1
 Create a new Empty Activity project (or any type of project you are preparing) – minimum SDK version for Firebase is 16. 
@@ -62,7 +66,7 @@ Copy in (or create) needed [xml layout files](https://github.com/cardenuto/Fireb
 </ol>
 
 ##Step 7
-Update the strings.xml resource file for Firebase Login strings
+Update the ***strings.xml*** resource file for Firebase Login strings
 
     <!-- TODO: (Required) Add your Firebase database reference replace YOUR_DATABASE_NAME with the name of your database -->
     <string name="FIREBASE_BASE_REF">https://YOUR_DATABASE_NAME.firebaseio.com</string>
@@ -96,7 +100,7 @@ Update the strings.xml resource file for Firebase Login strings
     <!-- **** End Firebase login text **** -->
 
 ##Step 8
-Update the styles.xml resource file. This style makes the login activity look like a dialog. You may need to adjust for your application’s style.
+Update the ***styles.xml*** resource file. This style makes the login activity look like a dialog. You may need to adjust for your application’s style.
 
     <!-- TODO: (Optional) Adjust for your theme -->
     <!-- Dialog Theme. -->
@@ -106,13 +110,13 @@ Update the styles.xml resource file. This style makes the login activity look li
     </style>
 
 ##Step 9
-Update the manifest file for internet permissions
+Update the ***AndroidManifest.xml*** file for internet permissions
 
     <!-- database access needs internet services -->
     <uses-permission android:name="android.permission.INTERNET" />
 
 ##Step 10
-Update the manifest file for the new login activity (Application Section)
+Update the ***AndroidManifest.xml*** file for the new login activity (Application Section)
     
     <activity
         android:name=".login.LoginActivity"
@@ -120,9 +124,37 @@ Update the manifest file for the new login activity (Application Section)
 
 
 ##Step 11
-Update required TODO items. We have marked many areas of the code for both required changes, such as updating your Firebase database name and the activity for your package, as well as optional items like password verification rules or setting authentication providers. 
+Update required **TODO** items. We have marked many areas of the code for both required changes, such as updating your Firebase database name and the activity for your package, as well as optional items like password verification rules or setting authentication providers. 
 
 ##Step 12
-Set Firebase Context
+Set Firebase Context, required to use Firebase. This is a Firebase setup design question that impacts this login process.
 
+    Firebase.setAndroidContext(getApplicationContext());
 
+####Option A : Add code to an activity
+The simplest solution is to add the code to your main activity. I did this in the [Example-Basic branch](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) of this project. Though it may be simple it may not be the best. If you should enter your application from another activity and then try to access Firebase you will get an error. I am unsure if the main activity were to be destroyed if this setting will also be lost. 
+
+```java
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // need to set application context
+        Firebase.setAndroidContext(getApplicationContext());
+        // setup the Firebase database reference
+        mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
+    }
+```
+
+####Option B : Create an Application Class
+Though slightly more complicated, my preferred solution is to create an application class that extends standard application class. As my programs become more complex, I have had to add other libraries’ initialization code to the application level as well. Set it once and don’t worry about application entry points or activity lifecycles. This is how I have setup the master branch of this project. 
+
+There are two steps to setting this up: 
+
+#####Option B : Step 1
+#####Option B : Step 2
+
+<hr>
+
+##External Setup Details
