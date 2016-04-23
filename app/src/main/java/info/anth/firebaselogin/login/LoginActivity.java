@@ -25,7 +25,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     public static final int RESULT_REQUEST_CODE = 1;
 
     public static final String LOG_TAG = LoginActivity.class.getSimpleName();
-    public static final Boolean LOG_SHOW = true;
+    public static final Boolean LOG_SHOW = false;
 
     private Firebase mRef;
     private LoginRegisterDialog loginRegisterDialog;
