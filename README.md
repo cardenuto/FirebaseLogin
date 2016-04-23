@@ -5,12 +5,27 @@ It is delivered in the form of examples with setup instructions included.
 
 Why not delivered as a library? For my own needs I didn’t want these classes and layouts “fixed.” Some of my apps I may want to add different branding, some additional information needs to be collected from the user. Adding this to a project, though not as quick as adding a dependency, is still relatively quick. I am new to Android so if there is a better process please share. 
 
+##Content
+[Branches](https://github.com/cardenuto/FirebaseLogin#branches)
+<br>[Steup](https://github.com/cardenuto/FirebaseLogin#setup)
+<br>[Using the code](https://github.com/cardenuto/FirebaseLogin#using-the-code)
+<br>[Structure/UI](https://github.com/cardenuto/FirebaseLogin#structureui)
+<br>[Dependencies](https://github.com/cardenuto/FirebaseLogin#dependencies)
+
+##Branches
+[Example-Basic]() - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
+<br>[Example-NewActivity]() - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
+
 ##Setup
 Setup instructions include a list of pre-steps and the steps I take to add this Firebase Login code to my projects. https://github.com/cardenuto/FirebaseLogin/blob/master/SETUP.md
 
 For FirebaseUI setup including instructions on Facebook and Twitter Auth see: 
 <br>The version I am using: https://github.com/firebase/FirebaseUI-Android/tree/0.3.1
 <br>The latest repository: https://github.com/firebase/FirebaseUI-Android
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
 
 ##Using the code
 Once the setup is complete, using the code is starting the LoginActivity. The LoginActivity is designed to be started with either startActivity or startActivityForResult. 
@@ -54,6 +69,8 @@ Implementation – TestActivity.java:
          }
      }
 
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
+
 ##Structure/UI
 This solution adds 5 new files: a login activity (LoginActivity.java), its layout file (activity_login.xml), a dialog to register new users (LoginRegisterDialog.java), its layout file (dialog_login_register.xml), and the overridden dialog used by the FirebaseUI library as the login UI (fragment_firebase_login.xml). Strings are stored in the strings.xml resource file. LoginActivity is a dialog style stored in the style.xml resource file.
 
@@ -71,3 +88,19 @@ The cancel button closes the activity, the login button return to the adjusted l
 <img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211151.png" alt="Step Screen" width="40%">
 
 Error checking is performed on the form before the user is able to login. The login button closes the activity returning the user to the prior activity. The cancel button brings the user back to the adjusted login UI. 
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
+
+##Dependencies
+
+Android Support
+<br>com.android.support:appcompat-v7:23.2.0
+
+Firebase
+<br>com.firebase:firebase-client-android:2.5.1
+<br>com.firebaseui:firebase-ui:0.3.1
+
+Google Authentication
+<br>com.google.android.gms:play-services-auth:8.4.0
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
