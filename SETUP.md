@@ -153,7 +153,7 @@ Though slightly more complicated, my preferred solution is to create an applicat
 There are three steps to setting this up:
 
 #####Option B : Step 1
-Create a new Java class, I like to name the file <application name>Application so my file is called [FirebaseLoginApplication.java](https://github.com/cardenuto/FirebaseLogin/blob/master/app/src/main/java/info/anth/firebaselogin/MainActivity.java).
+Create a new Java class, I like to name the file <application name>Application so my file is called [FirebaseLoginApplication.java](https://github.com/cardenuto/FirebaseLogin/blob/master/app/src/main/java/info/anth/firebaselogin/FirebaseLoginApplication.java).
 Take a look at the master version, it may contain additional code that may be useful.
 
 #####Option B : Step 2
