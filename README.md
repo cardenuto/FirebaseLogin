@@ -7,7 +7,7 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 
 ##Content
 [Branches](https://github.com/cardenuto/FirebaseLogin#branches)
-<br>[Steup](https://github.com/cardenuto/FirebaseLogin#setup)
+<br>[Setup](https://github.com/cardenuto/FirebaseLogin#setup)
 <br>[Using the code](https://github.com/cardenuto/FirebaseLogin#using-the-code)
 <br>[Structure/UI](https://github.com/cardenuto/FirebaseLogin#structureui)
 <br>[Dependencies](https://github.com/cardenuto/FirebaseLogin#dependencies)
@@ -15,6 +15,8 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 ##Branches
 [Example-Basic](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
 <br>[Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity) - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
+<br>[master](https://github.com/cardenuto/FirebaseLogin) - most recent example currently Example-NewActivity
+<br>[dev](https://github.com/cardenuto/FirebaseLogin/tree/Dev) - working copy Take a look at [DEV.md](https://github.com/cardenuto/FirebaseLogin/blob/dev/DEV.md) for current and future potential development
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
 
