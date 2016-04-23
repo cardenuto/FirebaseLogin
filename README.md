@@ -6,7 +6,7 @@ It is delivered in the form of examples with setup instructions included.
 Why not delivered as a library? For my own needs I didn’t want these classes and layouts “fixed.” Some of my apps I may want to add different branding, some additional information needs to be collected from the user. Adding this to a project, though not as quick as adding a dependency, is still relatively quick. I am new to Android so if there is a better process please share. 
 
 ##Setup
-Setup instructions include a list of pre-steps and the steps I take to add this Firebase Login code to my projects. https://github.com/cardenuto/FirebaseLogin/setup.md
+Setup instructions include a list of pre-steps and the steps I take to add this Firebase Login code to my projects. https://github.com/cardenuto/FirebaseLogin/blob/master/SETUP.md
 
 For FirebaseUI setup including instructions on Facebook and Twitter Auth see: 
 <br>The version I am using: https://github.com/firebase/FirebaseUI-Android/tree/0.3.1
