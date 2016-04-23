@@ -42,9 +42,9 @@ Implementation – MainActivity.java:
     }
 
 
-With <b>startActivityForResult</b>, the program can close the current activity should the user cancel out of the login process. In the example in the master branch, this is done for the “open activity requiring login” button.  The user is not allowed to interact with the new activity (TestActivity) if they are not logged in. If the user cancels out of the login process, the new activity also closes returning them to the main activity. 
+With <b>startActivityForResult</b>, the program can close the current activity should the user cancel out of the login process. In the example in the master branch, this is done for the “open activity requiring login” button.  The user is not allowed to interact with the new activity (NewActivity) if they are not logged in. If the user cancels out of the login process, the new activity also closes returning them to the main activity. 
 
-Implementation – TestActivity.java: 
+Implementation – NewActivity.java: 
 
      @Override
      public void onResume() {
