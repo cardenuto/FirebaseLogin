@@ -197,7 +197,7 @@ For "Authorized JavaScript origins" - use origin URI: `https://auth.firebase.com
 <br>For "Authorized redirect URIs" - use application path: `https://auth.firebase.com/v2/YOUR_DATABASE_NAME/auth/google/callback` - replacing YOUR_DATABASE_NAME with the name of your Firebase database.
 
 **Step 5** (G) Add **Android Client** OAuth credentials to the project. 
-<br>Google uses this to determine if your Android APP had API access. Without it your app will not access Google in order to use the Web Application credentials. It is not used in the Firebase setup.
+<br>Google uses this to determine if your Android APP has API access. Without it your app will not access Google in order to use the Web Application credentials. It is not used in the Firebase setup.
 
 For "Package name" use the package defined in your AndroidManifest.xml file.
 <br>For "Signing-certificate fingerprint" follow this [guide](https://support.google.com/cloud/answer/6158849?hl=en#android). **DO NOT SHARE** this fingerprint with people.
