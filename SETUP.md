@@ -11,13 +11,53 @@ There are a number of steps that need to be taken extermal of Android Studio in 
 Create a new Empty Activity project (or any type of project you are preparing) – minimum SDK version for Firebase is 16. 
 
 ##Step 2
-Update build.gradle with the required firebase dependencies (add to dependencies section)
-        dependencies {
-            ... 
-            compile 'com.firebase:firebase-client-android:2.5.1'
-            compile 'com.firebaseui:firebase-ui:0.3.1'
-            ... 
+Update ***build.gradle*** with the required firebase dependencies (add to dependencies section)
+
+    dependencies {
+        ... 
+        compile 'com.firebase:firebase-client-android:2.5.1'
+        compile 'com.firebaseui:firebase-ui:0.3.1'
+        ... 
+    }
+
+
+##Step 3
+(Optional if you are using Google Login) Update ***build.gradle*** with the required Google Auth dependencies (add to dependencies section)
+
+    dependencies {
+        ... 
+        compile 'com.google.android.gms:play-services-auth:8.4.0'
+        ... 
+    }
+
+##Step 4
+Update ***build.gradle*** with package options for duplicates (add to android section)
+
+    android {
+    ... 
+        /* added packaging options to fix error: Duplicate files copied in APK META-INF/NOTICE */
+        packagingOptions {
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/LICENSE-FIREBASE.txt'
+            exclude 'META-INF/NOTICE'
         }
+    ... 
+    }
+
+##Step 5
+Copy in (or create) login package (java files) 
+    Files:
+    1.	LoginActivity.java
+    2.	LoginRegisterDialog.java
+
+
+```java
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+```
 
 
 
