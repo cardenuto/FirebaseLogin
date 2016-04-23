@@ -1,3 +1,5 @@
+# dev Branch 
+
 # FirebaseLogin
 This repository provides reusable code that can be included in your Android project to add Firebase login functionality. It utilizes the FirebaseUI library (version 0.3.1), encapsulating it into its own activity, to be started when needed. It expands the login functionality by overriding the delivered login layout (fragment_firebase_login.xml) adding multi-language support by implementing resource strings and the ability to create/register a new user.  
 
@@ -16,7 +18,7 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 [Example-Basic](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
 <br>[Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity) - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
 <br>[master](https://github.com/cardenuto/FirebaseLogin) - most recent example currently Example-NewActivity
-<br>[dev](https://github.com/cardenuto/FirebaseLogin/tree/Dev) - working copy Take a look at [DEV.md](https://github.com/cardenuto/FirebaseLogin/blob/dev/DEV.md) for current and future potential development
+<br>[dev](https://github.com/cardenuto/FirebaseLogin/tree/dev) - working copy Take a look at [DEV.md](https://github.com/cardenuto/FirebaseLogin/blob/dev/DEV.md) for current and future potential development
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
 
