@@ -4,9 +4,51 @@ This repository provides reusable code that can be included in your Android proj
 It is delivered in the form of examples with setup instructions included. 
 
 Why not delivered as a library? For my own needs I didn’t want these classes and layouts “fixed.” Some of my apps I may want to add different branding, some additional information needs to be collected from the user. Adding this to a project, though not as quick as adding a dependency, is still relatively quick. I am new to Android so if there is a better process please share. 
- 
+
+##Using the code
+Once the setup is complete, using the code is starting the LoginActivity. The LoginActivity is designed to be started with either startActivity or startActivityForResult. 
+
+<b>startActivity</b> is used when the program doesn’t need to take any action should the user cancel out of the login process. In the example in the master branch, this is done for the login button. Should the user not login, no special action is taken.  
+
+Implementation – MainActivity.java: 
+
+    public void callLogin (View view) {
+        // Logout is logged in
+        if (mRef.getAuth() != null) callLogout(view);
+        // call the login intent
+         startActivity(new Intent(this, LoginActivity.class));
+    }
+
+
+With <b>startActivityForResult</b>, the program can close the current activity should the user cancel out of the login process. In the example in the master branch, this is done for the “open activity requiring login” button.  The user is not allowed to interact with the new activity (TestActivity) if they are not logged in. If the user cancels out of the login process, the new activity also closes returning them to the main activity. 
+
+Implementation – TestActivity.java: 
+
+     @Override
+     public void onResume() {
+         super.onResume();
+         if (mRef.getAuth()==null) startActivityForResult(new Intent(this, LoginActivity.class)
+             , LoginActivity.RESULT_REQUEST_CODE);
+     }
+     
+     @Override
+     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+     
+         if (requestCode == LoginActivity.RESULT_REQUEST_CODE) {
+             /*
+             if(resultCode == Activity.RESULT_OK){
+                 String result=data.getStringExtra("result");
+             }
+             */
+             if (resultCode == Activity.RESULT_CANCELED) {
+                 // Login was cancelled therefore cancel this activity
+                 finish();
+             }
+         }
+     }
+
 ##Structure/UI
-This solution adds 5 new files: a login activity (LoginActivity.java), its layout file (activity_login.xml), a dialog to register new users (LoginRegisterDialog.java), its layout file (dialog_login_register.xml), and the overridden dialog used by the FirebaseUI library as the login UI (fragment_firebase_login.xml). 
+This solution adds 5 new files: a login activity (LoginActivity.java), its layout file (activity_login.xml), a dialog to register new users (LoginRegisterDialog.java), its layout file (dialog_login_register.xml), and the overridden dialog used by the FirebaseUI library as the login UI (fragment_firebase_login.xml). Strings are stored in the strings.xml resource file. LoginActivity is a dialog style stored in the style.xml resource file.
 
 When the login intent is started the adjusted login UI is displayed. If the user successfully logs in, the activity will close and the user will return to the activity it was called from. 
 
