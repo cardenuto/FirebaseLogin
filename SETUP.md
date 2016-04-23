@@ -150,11 +150,71 @@ The simplest solution is to add the code to your main activity. I did this in th
 ####Option B : Create an Application Class
 Though slightly more complicated, my preferred solution is to create an application class that extends standard application class. As my programs become more complex, I have had to add other libraries’ initialization code to the application level as well. Set it once and don’t worry about application entry points or activity lifecycles. This is how I have setup the master branch of this project. 
 
-There are two steps to setting this up: 
+There are three steps to setting this up:
 
 #####Option B : Step 1
+Create a new Java class, I like to name the file <application name>Application so my file is called [FirebaseLoginApplication.java](https://github.com/cardenuto/FirebaseLogin/blob/master/app/src/main/java/info/anth/firebaselogin/MainActivity.java).
+Take a look at the master version, it may contain additional code that may be useful.
+
 #####Option B : Step 2
+Update the class to extend android.app.Application, override onCreate and add our Firebase set context code.
+
+```java
+    public class FirebaseLoginApplication extends android.app.Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            Firebase.setAndroidContext(this);
+        }
+    }
+```
+
+#####Option B : Step 3
+Update the ***AndroidManifest.xml*** file by setting the android:name property.
+
+    <application
+        android:name=".FirebaseLoginApplication"
+        ...
+         >
+
 
 <hr>
 
 ##External Setup Details
+I have marked the steps required for password authentication with a preceding (P) and for Google authentication (G)
+
+####External Step 1 (P)(G)
+Create [Firebase](https://www.firebase.com) account
+
+####External Step 2 (P)
+Enabled your Firebase database to Authenticate using Email and Password [Guide](https://www.firebase.com/docs/ios/guide/user-auth.html#section-enable-providers)
+
+####External Step 3 (G)
+Create Google developers account - [Google API Console](https://console.developers.google.com) - and setup a project.
+[Guide](https://developers.google.com/identity/sign-in/web/devconsole-project)
+
+####External Step 4 (G)
+Add **web application** OAuth credentials to the project. Firebase uses this to authenticate even when using Android.
+
+For "Authorized JavaScript origins" - use origin URI: https\://auth.firebase.com
+For "Authorized redirect URIs" - use application path: https\://auth.firebase.com/v2/YOUR_DATABASE_NAME/auth/google/callback
+- replacing YOUR_DATABASE_NAME with the name of your Firebase database.
+
+####External Step 5 (G)
+Add **Android Client** OAuth credentials to the project. Google uses this to determine if your Android APP had API access.
+Without it your app will not access Google in order to use the Web Application credentials.
+It is not used in the Firebase setup.
+
+For "Package name" use the package defined in your AndroidManifest.xml file.
+For "Signing-certificate fingerprint" follow this [guide](https://support.google.com/cloud/answer/6158849?hl=en#android). **DO NOT SHARE** this fingerprint with people.
+
+**NOTE:** I am using play services auth version 8.4.0 and I found that this is required – other instructions do not mention that you need it.
+
+####External Step 6 (G)
+Enabled your Firebase database to Authenticate using Google [Guide](https://www.firebase.com/docs/ios/guide/user-auth.html#section-enable-providers).
+Using your **Web Application** credentials, enable Google authentication and enter your Google Client ID and your Google Client Secret. **DO NOT SHARE** these keys.
+
+
+
+

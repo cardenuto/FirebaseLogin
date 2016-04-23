@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // need to set application context
-        Firebase.setAndroidContext(getApplicationContext());
         // setup the Firebase database reference
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
     }
