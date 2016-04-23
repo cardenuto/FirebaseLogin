@@ -13,8 +13,8 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 <br>[Dependencies](https://github.com/cardenuto/FirebaseLogin#dependencies)
 
 ##Branches
-[Example-Basic]() - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
-<br>[Example-NewActivity]() - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
+[Example-Basic](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
+<br>[Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity) - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
 
