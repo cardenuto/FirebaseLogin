@@ -132,6 +132,55 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         loginRegisterDialog.show(getFragmentManager(),"");
     }
 
+    // Reset Password
+    public void resetPassword(View view){
+        // Get email account - reset view is inside a linear layout before it shares a parent with email
+        View viewParent = (View) view.getParent().getParent();
+        EditText emailView = (EditText) viewParent.findViewById(R.id.email);
+        if(LOG_SHOW) Log.i(LOG_TAG, "viewParent value: " + String.valueOf(viewParent));
+
+        if (emailView != null) {
+            String email = emailView.getText().toString();
+            if(LOG_SHOW) Log.i(LOG_TAG, "Email view value: " + email);
+
+            if (!email.equals("")) {
+                // request reset email be sent
+                mRef.resetPassword(email, new Firebase.ResultHandler() {
+                    @Override
+                    public void onSuccess() {
+                        Context context = getApplicationContext();
+                        CharSequence text = getResources().getString(R.string.reset_email_sent);
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+
+                    @Override
+                    public void onError(FirebaseError firebaseError) {
+                        Context context = getApplicationContext();
+                        CharSequence text = firebaseError.getMessage();
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+                });
+            } else {
+                Context context = getApplicationContext();
+                CharSequence text = getResources().getString(R.string.reset_email_required);
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
+        }
+    }
+
+
     // Return to login dialog when back button is pressed
     public void clickLogin(){
         showFirebaseLoginPrompt();
@@ -181,9 +230,9 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
         // create record
         String provider = authData.getProvider();
-        String email = "Not provided by user";
-        String profileImageUrl = "Not provided by user";
-        String displayName = "Not provided by user";
+        String email = getResources().getString(R.string.missing_user_data);
+        String profileImageUrl = getResources().getString(R.string.missing_user_data);
+        String displayName = getResources().getString(R.string.missing_user_data);
 
         if(authData.getProviderData().containsKey("email")) email = authData.getProviderData().get("email").toString();
         if(authData.getProviderData().containsKey("profileImageURL")) profileImageUrl = authData.getProviderData().get("profileImageURL").toString();
