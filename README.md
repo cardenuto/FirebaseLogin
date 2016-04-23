@@ -10,14 +10,15 @@ This solution adds 5 new files: a login activity (LoginActivity.java), its layou
 
 When the login intent is started the adjusted login UI is displayed. If the user successfully logs in, the activity will close and the user will return to the activity it was called from. 
 
-<picture>
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211208.png" alt="Step Screen" width="40%">
 
 Should the user dismiss the login screen without logging in, the login activity’s UI will display. 
 
-<picture> 
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211205.png" alt="Step Screen" width="40%">
 
 The cancel button closes the activity, the login button return to the adjusted login UI where the user can create a new account should they wish.
 
-<picture><picture>
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211202.png" alt="Step Screen" width="40%">
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211151.png" alt="Step Screen" width="40%">
 
 Error checking is performed on the form before the user is able to login. The login button closes the activity returning the user to the prior activity. The cancel button brings the user back to the adjusted login UI. 
