@@ -4,6 +4,7 @@
 - create a separate application user id AUID (use in place of the UID when processing user IDs).  This will give the ability to change login authentication and not have to update much data, it will also allow for multiple emails to update the save application user information.
 - fixed timing issue when the login fully completes and user account data is available
 - fixed bug in Register Dialog that when it was canceled it returned the LoginActivity with the cancel intent instead of returning to the login options
+- Created progress bar for timing issue with login
 
 ##Future
 - Setting up a presence system

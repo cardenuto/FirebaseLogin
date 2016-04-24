@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,38 +8,51 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".login.LoginActivity"
-    android:orientation="vertical"
+    android:id="@+id/login_root"
     >
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/login_verify_text"
-        android:textSize="20sp"
-        />
-
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/login_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
+        android:orientation="vertical"
         >
-
-        <Button
-            android:id="@+id/activity_cancel"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login_verify_cancel"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            android:text="@string/login_verify_text"
+            android:textSize="20sp"
             />
-
-        <Button
-            android:id="@+id/activity_login"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login_verify_login"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:textColor="@color/colorAccent"
-            />
+            android:orientation="horizontal"
+            android:gravity="end"
+            >
 
+            <Button
+                android:id="@+id/activity_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_verify_cancel"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                />
+
+            <Button
+                android:id="@+id/activity_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_verify_login"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:textColor="@color/colorAccent"
+                />
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/login_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        />
+</RelativeLayout>

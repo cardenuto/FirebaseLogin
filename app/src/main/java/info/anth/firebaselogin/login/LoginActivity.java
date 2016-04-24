@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -40,10 +41,14 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     private Context context;
     private Boolean creatingAccount;
 
+    private View mRootView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mRootView = (View) findViewById(R.id.login_root);
 
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
         context = this;
@@ -83,6 +88,12 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public void onFirebaseLoggedIn(AuthData authData) {
+        View loginContentView = mRootView.findViewById(R.id.login_content);
+        ProgressBar loginProgressBar = (ProgressBar) mRootView.findViewById(R.id.login_progressbar);
+
+        loginContentView.setVisibility(View.GONE);
+        loginProgressBar.setVisibility(View.VISIBLE);
+
         if(LOG_SHOW) Log.i(LOG_TAG, "Logged in using " + authData.getProvider());
 
         // returned data
