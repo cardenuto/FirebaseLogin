@@ -11,12 +11,13 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 <br>[Using the code](https://github.com/cardenuto/FirebaseLogin#using-the-code)
 <br>[Structure/UI](https://github.com/cardenuto/FirebaseLogin#structureui)
 <br>[Dependencies](https://github.com/cardenuto/FirebaseLogin#dependencies)
+<br>[License](https://github.com/cardenuto/FirebaseLogin#license)
 
 ##Branches
 [Example-Basic](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
 <br>[Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity) - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
 <br>[Example-UserInfo](https://github.com/cardenuto/FirebaseLogin/tree/Example-UserInfo) - NewActivity example plus the saving of user data into the database under the users node. It also adds scrolling to the adjusted login screen (fragment_firebase_login.xml) along with a reset password button.
-<br>[master](https://github.com/cardenuto/FirebaseLogin) - most recent example currently Example-NewActivity
+<br>[master](https://github.com/cardenuto/FirebaseLogin) - most recent example currently Example-UserInfo
 <br>[dev](https://github.com/cardenuto/FirebaseLogin/tree/dev) - working copy Take a look at [DEV.md](https://github.com/cardenuto/FirebaseLogin/blob/dev/DEV.md) for current and future potential development
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
@@ -107,5 +108,11 @@ Firebase
 
 Google Authentication
 <br>com.google.android.gms:play-services-auth:8.4.0
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
+
+##License
+
+[The MIT License (MIT) Copyright (c) 2016 cardenuto](https://github.com/cardenuto/FirebaseLogin/blob/master/LICENSE)
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
