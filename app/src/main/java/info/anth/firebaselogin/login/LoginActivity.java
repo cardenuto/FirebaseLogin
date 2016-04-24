@@ -25,12 +25,15 @@ import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.google.android.gms.auth.api.Auth;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginActivity extends FirebaseLoginBaseActivity {
 
     public static final int RESULT_REQUEST_CODE = 1;
 
     public static final String LOG_TAG = LoginActivity.class.getSimpleName();
-    public static final Boolean LOG_SHOW = false;
+    public static final Boolean LOG_SHOW = true;
 
     private Firebase mRef;
     private LoginRegisterDialog loginRegisterDialog;
@@ -129,7 +132,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     // Create a new account
     public void createAccount(View view){
         dismissFirebaseLoginPrompt();
-        loginRegisterDialog.show(getFragmentManager(),"");
+        loginRegisterDialog.show(getFragmentManager(), "");
     }
 
     // Reset Password
@@ -198,12 +201,10 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     public void checkForUser(final AuthData authData) {
         // Check to see if they exist
-        mRef.child("users").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child("userInfo/userMap").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
-
-                if (dbUserInfo == null) {
+                if (dataSnapshot.getValue() == null) {
                     // user does not exist - create user
                     addUserInfo(authData);
                 }
@@ -216,7 +217,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
                 int duration = Toast.LENGTH_LONG;
 
                 Toast toast = Toast.makeText(context, text, duration);
-                toast.setGravity(Gravity.CENTER,0,0);
+                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
         });
@@ -238,7 +239,14 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         if(authData.getProviderData().containsKey("profileImageURL")) profileImageUrl = authData.getProviderData().get("profileImageURL").toString();
         if(authData.getProviderData().containsKey("displayName")) displayName = authData.getProviderData().get("displayName").toString();
 
+        // define users
         DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
-        mRef.child("users").child(uid).setValue(newUserInfo);
+        Firebase pushUser = mRef.child("userInfo/users").push();
+        pushUser.setValue(newUserInfo);
+
+        // define userMap
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("auid", pushUser.getKey());
+        mRef.child("userInfo/userMap").child(uid).updateChildren(updateMap);
     }
 }

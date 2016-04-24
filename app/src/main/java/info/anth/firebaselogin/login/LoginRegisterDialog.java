@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,9 @@ import android.widget.Toast;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Primary on 4/20/2016.
@@ -183,7 +187,14 @@ public class LoginRegisterDialog extends DialogFragment {
 
         if(mRef.getAuth().getProviderData().containsKey("profileImageURL")) profileImageUrl = mRef.getAuth().getProviderData().get("profileImageURL").toString();
 
+        // define users
         DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
-        mRef.child("users").child(uid).setValue(newUserInfo);
+        Firebase pushUser = mRef.child("userInfo/users").push();
+        pushUser.setValue(newUserInfo);
+
+        // define userMap
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("auid", pushUser.getKey());
+        mRef.child("userInfo/userMap").child(uid).updateChildren(updateMap);
     }
 }
