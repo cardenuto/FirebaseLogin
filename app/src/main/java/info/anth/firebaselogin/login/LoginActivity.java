@@ -33,11 +33,12 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     public static final int RESULT_REQUEST_CODE = 1;
 
     public static final String LOG_TAG = LoginActivity.class.getSimpleName();
-    public static final Boolean LOG_SHOW = true;
+    public static final Boolean LOG_SHOW = false;
 
     private Firebase mRef;
     private LoginRegisterDialog loginRegisterDialog;
     private Context context;
+    private Boolean creatingAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         setEnabledAuthProvider(AuthProviderType.GOOGLE);
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
 
+        creatingAccount = false;
         showFirebaseLoginPrompt();
         loginRegisterDialog = new LoginRegisterDialog();
     }
@@ -86,9 +88,24 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         // returned data
         if(LOG_SHOW) Log.i(LOG_TAG, "Login data: " + authData.toString());
 
-        // add user to database
-        checkForUser(authData);
+        // This code fires when a user is newly created using the LoginRegisterDialog
+        // because it contains an Auth listener. User creation is handled by the dialog code
+        //
+        // If the account is not being created: check to see if the user exists
+        // if not, add user to database, if it does completeLogin (called from
+        // checkForUser because of listener)
+        if(!creatingAccount) checkForUser(authData);
+    }
 
+    /**
+     * Split out completeLogin from the onFirebaseLoggedIn code
+     *
+     * This was due to a timing issue caused by checkForUser
+     * checkForUser has a listener that is needs to wait for, this code should execute when it is done.
+     * Also called from LoginRegisterDialog when the newly registered user is logged in
+     *
+    **/
+    public void completeLogin() {
         // Check for intent for result (if called by startActivity getCallingActivity is null, called by startActivityForResult is NOT null)
         if (getCallingActivity() != null) {
             Intent returnIntent = new Intent();
@@ -131,6 +148,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     // Create a new account
     public void createAccount(View view){
+        creatingAccount = true;
         dismissFirebaseLoginPrompt();
         loginRegisterDialog.show(getFragmentManager(), "");
     }
@@ -186,6 +204,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     // Return to login dialog when back button is pressed
     public void clickLogin(){
+        creatingAccount = false;
         showFirebaseLoginPrompt();
     }
 
@@ -208,6 +227,8 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
                     // user does not exist - create user
                     addUserInfo(authData);
                 }
+                // finish the login process once the listener is done
+                completeLogin();
             }
 
             @Override
@@ -225,7 +246,6 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     public void addUserInfo(AuthData authData) {
         //TODO: (Optional) Update for any new fields added to DbUserInfo class
-
         // set user id
         String uid = authData.getUid();
 
@@ -245,8 +265,20 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         pushUser.setValue(newUserInfo);
 
         // define userMap
+        populateUserMap(mRef, uid, pushUser.getKey());
+    }
+
+    /**
+     * populateUserMap - populates the userMap node of the Firebase database.
+     *
+     * @param ref - generic so it can be called by other programs (LoginRegisterDialog)
+     * @param uid - the delivered user ID from Firebase
+     * @param auid - Application user ID.
+     *
+     */
+    public static void populateUserMap(Firebase ref, String uid, String auid) {
         Map<String, Object> updateMap = new HashMap<>();
-        updateMap.put("auid", pushUser.getKey());
-        mRef.child("userInfo/userMap").child(uid).updateChildren(updateMap);
+        updateMap.put(uid, auid);
+        ref.child("userInfo/userMap").updateChildren(updateMap);
     }
 }

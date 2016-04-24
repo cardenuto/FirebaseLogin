@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
-                                String auid  = (String) dataSnapshot.child("auid").getValue();
+                                String auid  = (String) dataSnapshot.getValue();
 
                                 mRef.child("userInfo/users").child(auid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
