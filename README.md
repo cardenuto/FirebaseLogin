@@ -1,5 +1,3 @@
-# dev Branch 
-
 # FirebaseLogin
 This repository provides reusable code that can be included in your Android project to add Firebase login functionality. It utilizes the FirebaseUI library (version 0.3.1), encapsulating it into its own activity, to be started when needed. It expands the login functionality by overriding the delivered login layout (fragment_firebase_login.xml) adding multi-language support by implementing resource strings and the ability to create/register a new user.  
 
@@ -17,6 +15,7 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 ##Branches
 [Example-Basic](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
 <br>[Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity) - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
+<br>[Example-UserInfo](https://github.com/cardenuto/FirebaseLogin/tree/Example-UserInfo) - NewActivity example plus the saving of user data into the database under the users node. It also adds scrolling to the adjusted login screen (fragment_firebase_login.xml) along with a reset password button.
 <br>[master](https://github.com/cardenuto/FirebaseLogin) - most recent example currently Example-NewActivity
 <br>[dev](https://github.com/cardenuto/FirebaseLogin/tree/dev) - working copy Take a look at [DEV.md](https://github.com/cardenuto/FirebaseLogin/blob/dev/DEV.md) for current and future potential development
 
@@ -78,11 +77,13 @@ Implementation – NewActivity.java:
 ##Structure/UI
 This solution adds 5 new files: a login activity (LoginActivity.java), its layout file (activity_login.xml), a dialog to register new users (LoginRegisterDialog.java), its layout file (dialog_login_register.xml), and the overridden dialog used by the FirebaseUI library as the login UI (fragment_firebase_login.xml). Strings are stored in the strings.xml resource file. LoginActivity is a dialog style stored in the style.xml resource file.
 
-When the login intent is started the adjusted login UI is displayed. If the user successfully logs in, the activity will close and the user will return to the activity it was called from. 
+When the login intent is started the adjusted login UI is displayed. The screen was changed in the Example-UserInfo version. Both version are shown below.
+If the user successfully logs in, the activity will close and the user will return to the activity it was called from.
 
-<img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211208.png" alt="Step Screen" width="40%">
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211208.png" alt="Login Screen Original" width="40%">
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-23-191257.png" alt="Login Screen Version 2" width="40%">
 
-Should the user dismiss the login screen without logging in, the login activity’s UI will display. 
+Should the user dismiss the login screen without logging in, the login activity’s UI will display.
 
 <img src="https://github.com/cardenuto/FirebaseLogin/blob/master/device-2016-04-22-211205.png" alt="Step Screen" width="40%">
 

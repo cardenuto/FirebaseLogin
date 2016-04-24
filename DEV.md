@@ -1,9 +1,6 @@
 #FirebaseLogin Development
 
 ##Current 
-- Adding code to save user data into my database including collecting it first for password authentication
-- Reset Password button
-- Scroll the login dialog
 
 ##Future
 - Setting up a presence system
