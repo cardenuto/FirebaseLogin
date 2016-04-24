@@ -4,12 +4,18 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
+import info.anth.firebaselogin.login.DbUserInfo;
 import info.anth.firebaselogin.login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,35 +30,52 @@ public class MainActivity extends AppCompatActivity {
 
         // setup the Firebase database reference
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
+
+        final TextView loginText = (TextView) findViewById(R.id.login_text);
+
         mRef.addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
                     // User Logged IN
-                    String provider = authData.getProvider();
-                    String uid = authData.getUid();
-                    String email = "Not provided by authData";
-                    String profileImageUrl = "Not provided by authData";
-                    String displayName = "Not provided by authData";
+                    final String uid = authData.getUid();
 
-                    if(authData.getProviderData().containsKey("email")) email = authData.getProviderData().get("email").toString();
-                    if(authData.getProviderData().containsKey("profileImageURL")) profileImageUrl = authData.getProviderData().get("profileImageURL").toString();
-                    if(authData.getProviderData().containsKey("displayName")) displayName = authData.getProviderData().get("displayName").toString();
+                    // if being created, the AUTH happens prior to adding the values to "users" in the database
+                    // need to change this from addListenerForSingleValueEvent to addValueEventListener so we
+                    // can capture when the "user" data is updated. Once it is updated remove this listener
+                    mRef.child("users").child(uid).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
 
-                    String message = "Logged In\n";
-                    message += "\nProvider: " + provider;
-                    message += "\nUID: " + uid;
-                    message += "\nEmail: " + email;
-                    message += "\nDisplay Name: " + displayName;
-                    message += "\nprofileImageUrl: " + profileImageUrl;
+                            if (dbUserInfo != null) {
+                                // user exist
+                                String message = "Logged In\n";
+                                message += "\nProvider: " + dbUserInfo.getProvider();
+                                message += "\nUID: " + uid;
+                                message += "\nEmail: " + dbUserInfo.getEmail();
+                                message += "\nDisplay Name: " + dbUserInfo.getDisplayName();
+                                message += "\nprofileImageUrl: " + dbUserInfo.getProfileImageUrl();
 
-                    TextView loginText = (TextView) findViewById(R.id.login_text);
-                    loginText.setText(message);
+                                loginText.setText(message);
+
+                                // once data is updated remove the listener
+                                mRef.child("users").child(uid).removeEventListener(this);
+                            } else {
+                                loginText.setText("Missing user information.");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            // there was an error
+                            loginText.setText(firebaseError.getMessage());
+                        }
+                    });
 
                 } else {
                     // User Logged out
                     String message = "Logged Out";
-                    TextView loginText = (TextView) findViewById(R.id.login_text);
                     loginText.setText(message);
                 }
             }

@@ -32,6 +32,8 @@ public class LoginRegisterDialog extends DialogFragment {
     private Firebase mRef;
     private Context context;
 
+    private String email;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -61,7 +63,7 @@ public class LoginRegisterDialog extends DialogFragment {
         Boolean hasErrors = false;
 
         EditText emailView = (EditText) mView.findViewById(R.id.register_email);
-        String email = emailView.getText().toString();
+        email = emailView.getText().toString();
 
         EditText passwordView = (EditText) mView.findViewById(R.id.register_password);
         String password = passwordView.getText().toString();
@@ -97,6 +99,8 @@ public class LoginRegisterDialog extends DialogFragment {
             }
         }
 
+        //TODO: (Optional) Add additional logic for any new field verification
+
         if (!hasErrors) {
             createUser(email, password);
         }
@@ -111,6 +115,8 @@ public class LoginRegisterDialog extends DialogFragment {
                 mRef.authWithPassword(email, password, new Firebase.AuthResultHandler() {
                     @Override
                     public void onAuthenticated(AuthData authData) {
+                        // add data to UserInfo
+                        addUserInfoPassword();
                         mDialog.dismiss();
                         ((LoginActivity)getActivity()).clickCancel();
                     }
@@ -160,5 +166,24 @@ public class LoginRegisterDialog extends DialogFragment {
                 verifyInput();
             }
         });
+    }
+
+    public void addUserInfoPassword() {
+        //TODO: (Optional) Update for any new fields added to DbUserInfo class
+
+        // set user id
+        String uid = mRef.getAuth().getUid();
+
+        // create record
+        String profileImageUrl = "Not provided by authData";
+        String provider = mRef.getAuth().getProvider();
+
+        EditText nameView = (EditText) mView.findViewById(R.id.register_name);
+        String displayName = nameView.getText().toString();
+
+        if(mRef.getAuth().getProviderData().containsKey("profileImageURL")) profileImageUrl = mRef.getAuth().getProviderData().get("profileImageURL").toString();
+
+        DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
+        mRef.child("users").child(uid).setValue(newUserInfo);
     }
 }

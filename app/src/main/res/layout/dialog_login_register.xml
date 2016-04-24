@@ -42,4 +42,16 @@
         android:theme="@style/FirebaseEditTextTheme"
         android:inputType="textPassword" />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/register_name"
+        android:ems="10"
+        android:hint="@string/register_name"
+        android:paddingTop="20dp"
+        style="@style/FirebaseEditTextTheme"
+        android:theme="@style/FirebaseEditTextTheme"
+        android:inputType="textPersonName"
+        />
+
 </LinearLayout>
