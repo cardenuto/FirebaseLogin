@@ -12,8 +12,10 @@ The changes made in this version of the code updates the base programs for the L
 ##User Info
 I used a class to define the data structure I wanted added to the Firebase database under the “users” node.  The code creates a child node (under users) using the official UID of the user Firebase creates (i.e.: 15a54f42-aef4-4114-bd98-be624b65d021) and uses the class to define its (the UIDs) child values. (displayName, email, profileImageUrl, and provider) If you wanted to add additional fields you can add them to the class definition and when you assign the values, they will be added to the data. 
 
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/firebase-user-data.png" alt="Firebase data" width="60%">
+
 ##Password Reset
 Ability for the user to get a temporary password for password authentication was added. This changed the login screen. However, the ability to change the password was not added as mentioned above.
 
-<img src="https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/device-2016-04-23-191257.png" alt="Step Screen" width="40%">
+<img src="https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/device-2016-04-23-191257.png" alt="Login Screen" width="40%">
 
