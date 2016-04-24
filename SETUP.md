@@ -82,6 +82,7 @@ Update the ***strings.xml*** resource file for Firebase Login strings
     <string name="login_verify_text">This activity requires you to be logged in.</string>
     <string name="login_verify_cancel">Cancel</string>
     <string name="login_verify_login">Login</string>
+    <string name="login_reset_password">Reset Password</string>
 
     <!-- dialog_login_register.xml -->
     <string name="login_retype_password">Retype Password</string>
@@ -92,8 +93,12 @@ Update the ***strings.xml*** resource file for Firebase Login strings
     <string name="error_field_required">This field is required</string>
     <string name="error_password_retype">Password and password retype are not the same</string>
 
-    <!-- **** End Firebase login text **** -->
+    <!-- LoginActivity.java messages -->
+    <string name="reset_email_sent">Password reset email sent</string>
+    <string name="reset_email_required">Email field is required for reset</string>
+    <string name="missing_user_data">Not provided by user</string>
 
+    <!-- **** End Firebase login text **** -->
 ##Step 8
 Update the ***styles.xml*** resource file. This style makes the login activity look like a dialog. You may need to adjust for your application’s style.
 
