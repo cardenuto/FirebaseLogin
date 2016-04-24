@@ -4,12 +4,8 @@ Here are the steps to implement this code into your project. You will need to co
 The steps are listed as if you were starting an blank project, they will be similar if they are being added to an existing project. 
 However, you may need to adjust this code based on existing library versions, or classes/strings/styles you created with the same names.
 
-<hr>
-
-##External Setup
-There are a number of steps that need to be taken external of Android Studio in order to use Firebase Login for Password and Google authentication. [I've listed these step at the bottom of this document.](https://github.com/cardenuto/FirebaseLogin/blob/master/SETUP.md#external-setup-details)
-
-<hr>
+##Step 0
+**External Setup:** There are a number of steps that need to be taken external of Android Studio in order to use Firebase Login for Password and Google authentication. [I've listed these step at the bottom of this document.](https://github.com/cardenuto/FirebaseLogin/blob/master/SETUP.md#external-setup-details)
 
 ##Step 1
 Create a new Blank Activity project (or any type of project you are preparing) – minimum SDK version for Firebase is 16. 
@@ -49,21 +45,20 @@ Update ***build.gradle*** with package options for duplicates (add to android se
     }
 
 ##Step 5
-Copy in (or create) [login package](https://github.com/cardenuto/FirebaseLogin/tree/master/app/src/main/java/info/anth/firebaselogin/login) 
+Copy in (or create) login package. login is a package subdirectory separating the login files from other java files, though the subdirectory is not required, it is highly recommended. If you choose not to include the subdirectory you will need to make changes to the directory imports and activity definition in the AndoridManifest.xml file. 
 
-<ol>Files:
-<li>LoginActivity.java</li>
-<li>LoginRegisterDialog.java</li>
-</ol>
+Files | Version | Functionality
+--- | --- | ---
+LoginActivity.java<br>LoginRegisterDialog.java | [Example-Basic<br>Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity/app/src/main/java/info/anth/firebaselogin/login) | Basic Login Capabilities
+LoginActivity.java<br>LoginRegisterDialog.java<br>DbUserInfo.java | [Example-UserInfo](https://github.com/cardenuto/FirebaseLogin/tree/Example-UserInfo/app/src/main/java/info/anth/firebaselogin/login) | Prior + saving user data into database, login screen scrolling, reset password
 
 ##Step 6
-Copy in (or create) needed [xml layout files](https://github.com/cardenuto/FirebaseLogin/tree/master/app/src/main/res/layout) (into the standard layout location)
+Copy in (or create) needed xml layout files (into the standard layout location) Please keep these files synchronized with the files from step 5.
 
-<ol>Files:
-<li><a href="https://github.com/cardenuto/FirebaseLogin/blob/master/app/src/main/res/layout/activity_login.xml">activity_login.xml</a></li>
-<li><a href="https://github.com/cardenuto/FirebaseLogin/blob/master/app/src/main/res/layout/dialog_login_register.xml">dialog_login_register.xml</a></li>
-<li><a href="https://github.com/cardenuto/FirebaseLogin/blob/master/app/src/main/res/layout/fragment_firebase_login.xml">fragment_firebase_login.xml</a></li>
-</ol>
+Files | Version | Functionality
+--- | --- | ---
+[activity_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-NewActivity/app/src/main/res/layout/activity_login.xml)<br>[dialog_login_register.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-NewActivity/app/src/main/res/layout/dialog_login_register.xml)<br>[fragment_firebase_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-NewActivity/app/src/main/res/layout/fragment_firebase_login.xml)| [Example-Basic<br>Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity/app/src/main/res/layout) | Basic Login Capabilities
+[activity_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/app/src/main/res/layout/activity_login.xml)<br>[dialog_login_register.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/app/src/main/res/layout/dialog_login_register.xml)<br>[fragment_firebase_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/app/src/main/res/layout/fragment_firebase_login.xml)| [Example-UserInfo](https://github.com/cardenuto/FirebaseLogin/tree/Example-UserInfo/app/src/main/res/layout) | Prior + saving user data into database, login screen scrolling, reset password
 
 ##Step 7
 Update the ***strings.xml*** resource file for Firebase Login strings
