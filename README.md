@@ -8,7 +8,9 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 ##Content
 [Branches](https://github.com/cardenuto/FirebaseLogin#branches)
 <br>[Setup](https://github.com/cardenuto/FirebaseLogin#setup)
-<br>[Using the code](https://github.com/cardenuto/FirebaseLogin#using-the-code)
+<br>[Using the Login code](https://github.com/cardenuto/FirebaseLogin#using-the-login-code)
+<br>[Using the Logout code](https://github.com/cardenuto/FirebaseLogin#using-the-logout-code)
+<br>[Accessing Local User Information](https://github.com/cardenuto/FirebaseLogin#accessing-local-user-information)
 <br>[Structure/UI](https://github.com/cardenuto/FirebaseLogin#structureui)
 <br>[Dependencies](https://github.com/cardenuto/FirebaseLogin#dependencies)
 <br>[License](https://github.com/cardenuto/FirebaseLogin#license)
@@ -17,7 +19,8 @@ Why not delivered as a library? For my own needs I didn’t want these classes a
 [Example-Basic](https://github.com/cardenuto/FirebaseLogin/tree/Example-Basic) - base example of the code with a small surrounding app. Contains login (startActivity)  and logout buttons with logging to see success.
 <br>[Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity) - base example plus an auth listener to show login (auth) data, additional activity that requires valid login (startActivityForResult) and use of an application class
 <br>[Example-UserInfo](https://github.com/cardenuto/FirebaseLogin/tree/Example-UserInfo) - NewActivity example plus the saving of user data into the database under the users node. It also adds scrolling to the adjusted login screen (fragment_firebase_login.xml) along with a reset password button.
-<br>[master](https://github.com/cardenuto/FirebaseLogin) - most recent example currently Example-UserInfo
+<br>[Example-AUID](https://github.com/cardenuto/FirebaseLogin/tree/Example-AUID) - UserInfo example plus the creation of a separate application user ID (AUID), local storage of user information for synchronous access, logout function added to LoginActivity, bug fixes.
+<br>[master](https://github.com/cardenuto/FirebaseLogin) - most recent example currently Example-AUID
 <br>[dev](https://github.com/cardenuto/FirebaseLogin/tree/dev) - working copy Take a look at [DEV.md](https://github.com/cardenuto/FirebaseLogin/blob/dev/DEV.md) for current and future potential development
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
@@ -31,7 +34,7 @@ For FirebaseUI setup including instructions on Facebook and Twitter Auth see:
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
 
-##Using the code
+##Using the Login code
 Once the setup is complete, using the code is starting the LoginActivity. The LoginActivity is designed to be started with either startActivity or startActivityForResult. 
 
 <b>startActivity</b> is used when the program doesn’t need to take any action should the user cancel out of the login process. In the example in the master branch, this is done for the login button. Should the user not login, no special action is taken.  
@@ -72,6 +75,48 @@ Implementation – NewActivity.java:
              }
          }
      }
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
+
+##Using the Logout code
+Version Example-AUID and up contains a logout function that logs the user out of Firebase and clears the local data stored in Shared Preferences.
+When calling, pass in the reference of the Firebase database you want logged out and the current Activity (to clear the shared preferences) Example from the MainActivity.java logout button.
+
+```java
+    public void callLogout (View view) {
+        // logout
+        LoginActivity.logoutLoginActivity(mRef, this);
+        if (mRef.getAuth() == null) Log.i(LOG_TAG, "Logout successful");
+    }
+```
+
+[Top](https://github.com/cardenuto/FirebaseLogin#content)
+
+##Accessing Local User Information
+Version Example-AUID and up saves some user information locally in Shared Preferences at login. Firebase is an asynchronous data retrieval system (build structure with the data pushed into it using listeners) which for changing data is a nice design. For stagnate data such as user data I wanted the ability to access the data synchronously (having the program wait until the data is retrieved before continuing.) In version Example-AUID I added a class, LocalUserInfo.java, with the UID, AUID, email, display name, and profile image fields stored. (In Firebase you can get some of these fields synchronously by using getAuth, but not all, it is not expandable, and the data cannot be changed should the user want to be called Bob in your system even though their Google Auth name is Fred.)
+
+ActivityLogin populates the Shared Preferences. All you need to do to access the values is pass the Activity into the class constructor as shown below.
+This code is part of NewActivity.java (Example-AUID) as an example.
+
+```java
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Check if auth is set if it is not (returns null) start login activity
+        if (mRef.getAuth()==null) startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.RESULT_REQUEST_CODE);
+
+        LocalUserInfo user = new LocalUserInfo(this);
+        String message = "Logged In\n";
+        message += "UID: " + user.uid;
+        message += "\nAUID: " + user.auid;
+        message += "\nEmail: " + user.email;
+        message += "\nDisplay Name: " + user.displayName;
+        message += "\nprofileImageUrl: " + user.profileImageUrl;
+
+        Log.i(LOG_TAG, "onResume from Shared Preferences: " + message);
+    }
+```
 
 [Top](https://github.com/cardenuto/FirebaseLogin#content)
 

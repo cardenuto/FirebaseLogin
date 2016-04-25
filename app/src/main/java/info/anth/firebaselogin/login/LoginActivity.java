@@ -4,15 +4,18 @@ package info.anth.firebaselogin.login;
 //TODO: (Required) Add your package name to the resource import
 import info.anth.firebaselogin.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -25,6 +28,9 @@ import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.google.android.gms.auth.api.Auth;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginActivity extends FirebaseLoginBaseActivity {
 
     public static final int RESULT_REQUEST_CODE = 1;
@@ -35,14 +41,21 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     private Firebase mRef;
     private LoginRegisterDialog loginRegisterDialog;
     private Context context;
+    private Boolean creatingAccount;
+
+    private View mRootView;
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mRootView = findViewById(R.id.login_root);
+
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
         context = this;
+        mActivity = this;
 
         // set login button listener
         Button buttonLogin = (Button) findViewById(R.id.activity_login);
@@ -64,7 +77,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        logout();
+        logoutLoginActivity(mRef,this);
 
         //TODO: (Optional) set password authentication providers (example set for google and password)
         //setEnabledAuthProvider(AuthProviderType.FACEBOOK);
@@ -72,20 +85,42 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         setEnabledAuthProvider(AuthProviderType.GOOGLE);
         setEnabledAuthProvider(AuthProviderType.PASSWORD);
 
+        creatingAccount = false;
         showFirebaseLoginPrompt();
         loginRegisterDialog = new LoginRegisterDialog();
     }
 
     @Override
     public void onFirebaseLoggedIn(AuthData authData) {
+        View loginContentView = mRootView.findViewById(R.id.login_content);
+        ProgressBar loginProgressBar = (ProgressBar) mRootView.findViewById(R.id.login_progressbar);
+
+        loginContentView.setVisibility(View.GONE);
+        loginProgressBar.setVisibility(View.VISIBLE);
+
         if(LOG_SHOW) Log.i(LOG_TAG, "Logged in using " + authData.getProvider());
 
         // returned data
         if(LOG_SHOW) Log.i(LOG_TAG, "Login data: " + authData.toString());
 
-        // add user to database
-        checkForUser(authData);
+        // This code fires when a user is newly created using the LoginRegisterDialog
+        // because it contains an Auth listener. User creation is handled by the dialog code
+        //
+        // If the account is not being created: check to see if the user exists
+        // if not, add user to database, if it does completeLogin (called from
+        // checkForUser because of listener)
+        if(!creatingAccount) checkForUser(authData);
+    }
 
+    /**
+     * Split out completeLogin from the onFirebaseLoggedIn code
+     *
+     * This was due to a timing issue caused by checkForUser
+     * checkForUser has a listener that is needs to wait for, this code should execute when it is done.
+     * Also called from LoginRegisterDialog when the newly registered user is logged in
+     *
+    **/
+    public void completeLogin() {
         // Check for intent for result (if called by startActivity getCallingActivity is null, called by startActivityForResult is NOT null)
         if (getCallingActivity() != null) {
             Intent returnIntent = new Intent();
@@ -97,6 +132,8 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     @Override
     public void onFirebaseLoggedOut() {
         if(LOG_SHOW) Log.i(LOG_TAG, "Logged out");
+        // Reset login shared preferences
+        //clearLoginSharedPreferences(this);
     }
 
     @Override
@@ -128,8 +165,9 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     // Create a new account
     public void createAccount(View view){
+        creatingAccount = true;
         dismissFirebaseLoginPrompt();
-        loginRegisterDialog.show(getFragmentManager(),"");
+        loginRegisterDialog.show(getFragmentManager(), "");
     }
 
     // Reset Password
@@ -183,6 +221,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
     // Return to login dialog when back button is pressed
     public void clickLogin(){
+        creatingAccount = false;
         showFirebaseLoginPrompt();
     }
 
@@ -197,16 +236,20 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     }
 
     public void checkForUser(final AuthData authData) {
+        final String[] auid = new String[1];
+
         // Check to see if they exist
-        mRef.child("users").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child("userInfo/userMap").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
-
-                if (dbUserInfo == null) {
+                if (dataSnapshot.getValue() == null) {
                     // user does not exist - create user
-                    addUserInfo(authData);
+                    auid[0] = addUserInfo(authData);
+                } else {
+                    auid[0] = (String) dataSnapshot.getValue();
                 }
+                // Populate the local data
+                populateDataLocally(mRef, authData.getUid(), auid[0], mActivity);
             }
 
             @Override
@@ -216,15 +259,14 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
                 int duration = Toast.LENGTH_LONG;
 
                 Toast toast = Toast.makeText(context, text, duration);
-                toast.setGravity(Gravity.CENTER,0,0);
+                toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
         });
     }
 
-    public void addUserInfo(AuthData authData) {
+    public String addUserInfo(AuthData authData) {
         //TODO: (Optional) Update for any new fields added to DbUserInfo class
-
         // set user id
         String uid = authData.getUid();
 
@@ -238,7 +280,63 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         if(authData.getProviderData().containsKey("profileImageURL")) profileImageUrl = authData.getProviderData().get("profileImageURL").toString();
         if(authData.getProviderData().containsKey("displayName")) displayName = authData.getProviderData().get("displayName").toString();
 
+        // define users
         DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
-        mRef.child("users").child(uid).setValue(newUserInfo);
+        Firebase pushUser = mRef.child("userInfo/users").push();
+        pushUser.setValue(newUserInfo);
+
+        // define userMap
+        populateUserMap(mRef, uid, pushUser.getKey());
+
+        return pushUser.getKey();
+    }
+
+    /**
+     * populateUserMap - populates the userMap node of the Firebase database.
+     *
+     * @param ref - generic so it can be called by other programs (LoginRegisterDialog)
+     * @param uid - the delivered user ID from Firebase
+     * @param auid - Application user ID.
+     *
+     */
+    public static void populateUserMap(Firebase ref, String uid, String auid) {
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put(uid, auid);
+        ref.child("userInfo/userMap").updateChildren(updateMap);
+    }
+
+    public void populateDataLocally(Firebase ref, final String uid, final String auid, final Activity activity) {
+        // Reset login shared preferences
+        ref.child("userInfo/users").child(auid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
+
+                if (dbUserInfo != null) {
+                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,dbUserInfo.getEmail(),dbUserInfo.getProfileImageUrl(),dbUserInfo.getDisplayName());
+                    localUserInfo.saveValues(activity);
+                } else {
+                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,null,getString(R.string.preference_missing_error));
+                    localUserInfo.saveValues(activity);
+                }
+                // finish the login process once the listener is done
+                completeLogin();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                // there was an error
+                LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,null,firebaseError.getMessage());
+                localUserInfo.saveValues(activity);
+                // finish the login process once the listener is done
+                completeLogin();
+            }
+        });
+    }
+
+    public static void logoutLoginActivity(Firebase ref, Activity activity) {
+        ref.unauth();
+        LocalUserInfo localUserInfo = new LocalUserInfo(activity);
+        localUserInfo.clearValues(activity);
     }
 }

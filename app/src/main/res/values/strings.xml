@@ -4,6 +4,23 @@
     <!-- TODO: (Required) Add your Firebase database reference replace YOUR_DATABASE_NAME with the name of your database -->
     <string name="FIREBASE_BASE_REF">https://YOUR_DATABASE_NAME.firebaseio.com</string>
 
+    <!-- **** Start Shared Preference **** -->
+
+    <!-- TODO: (Required) Change the preference_file_key for your application -->
+    <!-- define shared file name -->
+    <string name="preference_file_key">info.anth.firebaselogin.PREFERENCE_FILE_KEY</string>
+
+    <!-- TODO: (Optional) Change fields defaults for your shared preferences -->
+    <!-- define shared file field - defaults -->
+    <string name="preference_email_default">none</string>
+    <string name="preference_display_name_default">Not provided</string>
+    <string name="preference_profile_image_default">none</string>
+
+    <!-- Messages -->
+    <string name="preference_missing_error">Missing user data</string>
+
+    <!-- **** End Shared Preference **** -->
+
     <!-- **** Start Firebase login text **** -->
 
     <!-- fragment_firebase_login.xml -->

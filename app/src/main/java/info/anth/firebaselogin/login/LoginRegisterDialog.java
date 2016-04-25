@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,9 @@ import android.widget.Toast;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Primary on 4/20/2016.
@@ -116,9 +120,11 @@ public class LoginRegisterDialog extends DialogFragment {
                     @Override
                     public void onAuthenticated(AuthData authData) {
                         // add data to UserInfo
-                        addUserInfoPassword();
+                        String auid = addUserInfoPassword();
                         mDialog.dismiss();
-                        ((LoginActivity)getActivity()).clickCancel();
+                        // Populate local data once the user is logged in and account is created
+                        // The login process needs to be completed in populateDataLocally
+                        ((LoginActivity)getActivity()).populateDataLocally(mRef, authData.getUid(), auid, getActivity());
                     }
 
                     @Override
@@ -168,9 +174,8 @@ public class LoginRegisterDialog extends DialogFragment {
         });
     }
 
-    public void addUserInfoPassword() {
+    public String addUserInfoPassword() {
         //TODO: (Optional) Update for any new fields added to DbUserInfo class
-
         // set user id
         String uid = mRef.getAuth().getUid();
 
@@ -183,7 +188,14 @@ public class LoginRegisterDialog extends DialogFragment {
 
         if(mRef.getAuth().getProviderData().containsKey("profileImageURL")) profileImageUrl = mRef.getAuth().getProviderData().get("profileImageURL").toString();
 
+        // define users
         DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
-        mRef.child("users").child(uid).setValue(newUserInfo);
+        Firebase pushUser = mRef.child("userInfo/users").push();
+        pushUser.setValue(newUserInfo);
+
+        // define userMap
+        LoginActivity.populateUserMap(mRef, uid, pushUser.getKey());
+
+        return pushUser.getKey();
     }
 }
