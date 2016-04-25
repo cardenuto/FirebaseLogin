@@ -1,9 +1,12 @@
 package info.anth.firebaselogin;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.firebase.client.Firebase;
 
@@ -27,6 +30,10 @@ public class NewActivity extends AppCompatActivity {
 
         // Check if auth is set if it is not (returns null) start login activity
         if (mRef.getAuth()==null) startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.RESULT_REQUEST_CODE);
+
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String myPref = sharedPref.getString(getString(R.string.preference_display_name), getString(R.string.preference_display_name_default));
+        Log.i("ajc", "onResume Logout Display Name from SP: " + myPref);
     }
 
     @Override

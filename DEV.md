@@ -74,3 +74,40 @@ code:
 
     }
 ```
+
+## Other Notes
+getAUID try to move intent call to function not in activity - don't think this will work
+
+```java
+    public String getAUID(Activity activity) {
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        return sharedPref.getString("displayName", "no shared pref");
+    }
+
+    public String getAUID(Context context, Boolean withLogin) {
+
+        Firebase reference = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
+        String returnMessage;
+        Boolean lookupAUID = false;
+
+        if (reference.getAuth() == null) {
+            returnMessage = "no login";
+            if (withLogin) {
+                // call the login intent
+                startActivity(new Intent(context, LoginActivity.class));
+                if (reference.getAuth() != null) {
+                    lookupAUID = true;
+                }
+            }
+        } else {
+            lookupAUID = true;
+        }
+
+        if (lookupAUID) {
+            returnMessage = reference.child("userInfo/userMap").child(reference.getAuth().getUid()).getValue();
+            reference.addListenerForSingleValueEvent();
+        }
+
+        return "hi";
+    }
+```

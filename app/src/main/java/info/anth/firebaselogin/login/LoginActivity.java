@@ -4,9 +4,11 @@ package info.anth.firebaselogin.login;
 //TODO: (Required) Add your package name to the resource import
 import info.anth.firebaselogin.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,16 +44,18 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     private Boolean creatingAccount;
 
     private View mRootView;
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mRootView = (View) findViewById(R.id.login_root);
+        mRootView = findViewById(R.id.login_root);
 
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
         context = this;
+        mActivity = this;
 
         // set login button listener
         Button buttonLogin = (Button) findViewById(R.id.activity_login);
@@ -128,6 +132,8 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     @Override
     public void onFirebaseLoggedOut() {
         if(LOG_SHOW) Log.i(LOG_TAG, "Logged out");
+        // Reset login shared preferences
+        clearLoginSharedPreferences(this);
     }
 
     @Override
@@ -230,16 +236,20 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     }
 
     public void checkForUser(final AuthData authData) {
+        final String[] auid = new String[1];
+
         // Check to see if they exist
         mRef.child("userInfo/userMap").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     // user does not exist - create user
-                    addUserInfo(authData);
+                    auid[0] = addUserInfo(authData);
+                } else {
+                    auid[0] = (String) dataSnapshot.getValue();
                 }
-                // finish the login process once the listener is done
-                completeLogin();
+                // Populate the local data
+                populateDataLocally(mRef, auid[0], mActivity);
             }
 
             @Override
@@ -255,7 +265,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         });
     }
 
-    public void addUserInfo(AuthData authData) {
+    public String addUserInfo(AuthData authData) {
         //TODO: (Optional) Update for any new fields added to DbUserInfo class
         // set user id
         String uid = authData.getUid();
@@ -277,6 +287,8 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
         // define userMap
         populateUserMap(mRef, uid, pushUser.getKey());
+
+        return pushUser.getKey();
     }
 
     /**
@@ -291,5 +303,58 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put(uid, auid);
         ref.child("userInfo/userMap").updateChildren(updateMap);
+    }
+
+    public void populateDataLocally(Firebase ref, String auid, Activity activity) {
+        // Reset login shared preferences
+        clearLoginSharedPreferences(activity);
+
+        SharedPreferences sharedPref = activity.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+
+        // add auid
+        editor.putString(getString(R.string.preference_auid), auid);
+
+        ref.child("userInfo/users").child(auid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("CommitPrefEdits")
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
+
+                if (dbUserInfo != null) {
+                    editor.putString(getString(R.string.preference_email), dbUserInfo.getEmail());
+                    editor.putString(getString(R.string.preference_display_name), dbUserInfo.getDisplayName());
+                    editor.putString(getString(R.string.preference_profile_image), dbUserInfo.getProfileImageUrl());
+                } else {
+                    editor.putString(getString(R.string.preference_display_name), getString(R.string.preference_missing_error));
+                }
+                editor.commit();
+                // finish the login process once the listener is done
+                completeLogin();
+            }
+
+            @SuppressLint("CommitPrefEdits")
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                // there was an error
+                editor.putString(getString(R.string.preference_display_name), firebaseError.getMessage());
+                editor.commit();
+                // finish the login process once the listener is done
+                completeLogin();
+            }
+        });
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    public void clearLoginSharedPreferences(Activity activity){
+        SharedPreferences sharedPref = activity.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+
+        // clear out current values
+        editor.remove(getString(R.string.preference_auid));
+        editor.remove(getString(R.string.preference_email));
+        editor.remove(getString(R.string.preference_display_name));
+        editor.remove(getString(R.string.preference_profile_image));
+        editor.commit();
     }
 }

@@ -120,11 +120,11 @@ public class LoginRegisterDialog extends DialogFragment {
                     @Override
                     public void onAuthenticated(AuthData authData) {
                         // add data to UserInfo
-                        addUserInfoPassword();
+                        String auid = addUserInfoPassword();
                         mDialog.dismiss();
-                        // Once the user is logged in and account is created, the login process needs
-                        // to be completed.
-                        ((LoginActivity)getActivity()).completeLogin();
+                        // Populate local data once the user is logged in and account is created
+                        // The login process needs to be completed in populateDataLocally
+                        ((LoginActivity)getActivity()).populateDataLocally(mRef, auid, getActivity());
                     }
 
                     @Override
@@ -174,7 +174,7 @@ public class LoginRegisterDialog extends DialogFragment {
         });
     }
 
-    public void addUserInfoPassword() {
+    public String addUserInfoPassword() {
         //TODO: (Optional) Update for any new fields added to DbUserInfo class
         // set user id
         String uid = mRef.getAuth().getUid();
@@ -195,5 +195,7 @@ public class LoginRegisterDialog extends DialogFragment {
 
         // define userMap
         LoginActivity.populateUserMap(mRef, uid, pushUser.getKey());
+
+        return pushUser.getKey();
     }
 }
