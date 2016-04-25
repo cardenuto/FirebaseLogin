@@ -17,6 +17,8 @@ The changes made in this version of the code updates the base programs for the L
 ### User Information
 I created a mapping table that maps the standard Firebase UID to an application user ID (AUID). The AUID is used in place of the UID when adding data specific to the user. The user data had been grouped under a new node userInfo with nodes userMap and users as children. 
 
+![Firebase screen shot](https://github.com/cardenuto/FirebaseLogin/blob/Example-AUID/firebase-user-data-AUID.png)
+
 By using an application user ID, it places the control over the ID in the hands of the application owner. This code provides the ability to group Firebase UIDs into one Application UID and the ability to change authentication methods easily.
 
 ### Saving User Information Locally
