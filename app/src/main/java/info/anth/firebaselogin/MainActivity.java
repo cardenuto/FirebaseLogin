@@ -16,6 +16,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import info.anth.firebaselogin.login.DbUserInfo;
+import info.anth.firebaselogin.login.LocalUserInfo;
 import info.anth.firebaselogin.login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
-                                String auid  = (String) dataSnapshot.getValue();
+                                String auid = (String) dataSnapshot.getValue();
 
                                 mRef.child("userInfo/users").child(auid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void callLogout (View view) {
         // logout
-        mRef.unauth();
+        LoginActivity.logoutLoginActivity(mRef, this);
         if (mRef.getAuth() == null) Log.i(LOG_TAG, "Logout successful");
     }
 

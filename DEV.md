@@ -1,10 +1,12 @@
 #FirebaseLogin Development
 
 ##Current 
-- create a separate application user id AUID (use in place of the UID when processing user IDs).  This will give the ability to change login authentication and not have to update much data, it will also allow for multiple emails to update the save application user information.
+- create a separate application user id AUID (use in place of the UID when processing user IDs).  This will give the ability to change login authentication and not have to update much data, it will also allow for multiple emails to update the same application user information.
 - fixed timing issue when the login fully completes and user account data is available
 - fixed bug in Register Dialog that when it was canceled it returned the LoginActivity with the cancel intent instead of returning to the login options
 - Created progress bar for timing issue with login
+- added local data store shared preferences for data retrieved synchronously
+- added logout function in LoginActivity
 
 ##Future
 - Setting up a presence system
@@ -13,6 +15,7 @@
 - Add Material Design to dialogs
 - Check for email already registered with another auth provider
 - Ability to change password
+- Option not to have user information saved (logging into a second database) - ability to have saved database by database
 
 ##Presence System
 Step 1 would be to define what does presence mean to the application. the code for onDisconnect works ok but it looks at the connection

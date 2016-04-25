@@ -10,15 +10,8 @@
     <!-- define shared file name -->
     <string name="preference_file_key">info.anth.firebaselogin.PREFERENCE_FILE_KEY</string>
 
-    <!-- TODO: (Optional) Change fields saved for your shared preferences -->
-    <!-- define shared file fields -->
-    <string name="preference_auid">auid</string>
-    <string name="preference_email">email</string>
-    <string name="preference_display_name">displayName</string>
-    <string name="preference_profile_image">profileImage</string>
-
+    <!-- TODO: (Optional) Change fields defaults for your shared preferences -->
     <!-- define shared file field - defaults -->
-    <string name="preference_auid_default">none</string>
     <string name="preference_email_default">none</string>
     <string name="preference_display_name_default">Not provided</string>
     <string name="preference_profile_image_default">none</string>

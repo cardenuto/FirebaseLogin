@@ -51,6 +51,7 @@ Files | Version | Functionality
 --- | --- | ---
 LoginActivity.java<br>LoginRegisterDialog.java | [Example-Basic<br>Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity/app/src/main/java/info/anth/firebaselogin/login) | Basic Login Capabilities
 LoginActivity.java<br>LoginRegisterDialog.java<br>DbUserInfo.java | [Example-UserInfo](https://github.com/cardenuto/FirebaseLogin/tree/Example-UserInfo/app/src/main/java/info/anth/firebaselogin/login) | Prior + saving user data into database, login screen scrolling, reset password
+LoginActivity.java<br>LoginRegisterDialog.java<br>DbUserInfo.java<br>LocalUserInfo.java | [Example-AUID](https://github.com/cardenuto/FirebaseLogin/tree/Example-AUID/app/src/main/java/info/anth/firebaselogin/login) | Prior + application user ID, saving user data locally, LoginActivity logout
 
 ##Step 6
 Copy in (or create) needed xml layout files (into the standard layout location) Please keep these files synchronized with the files from step 5.
@@ -59,12 +60,30 @@ Files | Version | Functionality
 --- | --- | ---
 [activity_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-NewActivity/app/src/main/res/layout/activity_login.xml)<br>[dialog_login_register.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-NewActivity/app/src/main/res/layout/dialog_login_register.xml)<br>[fragment_firebase_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-NewActivity/app/src/main/res/layout/fragment_firebase_login.xml)| [Example-Basic<br>Example-NewActivity](https://github.com/cardenuto/FirebaseLogin/tree/Example-NewActivity/app/src/main/res/layout) | Basic Login Capabilities
 [activity_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/app/src/main/res/layout/activity_login.xml)<br>[dialog_login_register.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/app/src/main/res/layout/dialog_login_register.xml)<br>[fragment_firebase_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-UserInfo/app/src/main/res/layout/fragment_firebase_login.xml)| [Example-UserInfo](https://github.com/cardenuto/FirebaseLogin/tree/Example-UserInfo/app/src/main/res/layout) | Prior + saving user data into database, login screen scrolling, reset password
+[activity_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-AUID/app/src/main/res/layout/activity_login.xml)<br>[dialog_login_register.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-AUID/app/src/main/res/layout/dialog_login_register.xml)<br>[fragment_firebase_login.xml](https://github.com/cardenuto/FirebaseLogin/blob/Example-AUID/app/src/main/res/layout/fragment_firebase_login.xml)| [Example-AUID](https://github.com/cardenuto/FirebaseLogin/tree/Example-AUID/app/src/main/res/layout) | Prior + application user ID, saving user data locally, LoginActivity logout
 
 ##Step 7
-Update the ***strings.xml*** resource file for Firebase Login strings
+Update the ***strings.xml*** resource file for Firebase Login strings. Latest version, should work for all versions.
 
     <!-- TODO: (Required) Add your Firebase database reference replace YOUR_DATABASE_NAME with the name of your database -->
     <string name="FIREBASE_BASE_REF">https://YOUR_DATABASE_NAME.firebaseio.com</string>
+
+    <!-- **** Start Shared Preference **** -->
+
+    <!-- TODO: (Required) Change the preference_file_key for your application -->
+    <!-- define shared file name -->
+    <string name="preference_file_key">info.anth.firebaselogin.PREFERENCE_FILE_KEY</string>
+
+    <!-- TODO: (Optional) Change fields defaults for your shared preferences -->
+    <!-- define shared file field - defaults -->
+    <string name="preference_email_default">none</string>
+    <string name="preference_display_name_default">Not provided</string>
+    <string name="preference_profile_image_default">none</string>
+
+    <!-- Messages -->
+    <string name="preference_missing_error">Missing user data</string>
+
+    <!-- **** End Shared Preference **** -->
 
     <!-- **** Start Firebase login text **** -->
 
@@ -99,6 +118,7 @@ Update the ***strings.xml*** resource file for Firebase Login strings
     <string name="missing_user_data">Not provided by user</string>
 
     <!-- **** End Firebase login text **** -->
+
 ##Step 8
 Update the ***styles.xml*** resource file. This style makes the login activity look like a dialog. You may need to adjust for your application’s style.
 

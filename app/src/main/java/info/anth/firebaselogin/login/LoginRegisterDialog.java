@@ -124,7 +124,7 @@ public class LoginRegisterDialog extends DialogFragment {
                         mDialog.dismiss();
                         // Populate local data once the user is logged in and account is created
                         // The login process needs to be completed in populateDataLocally
-                        ((LoginActivity)getActivity()).populateDataLocally(mRef, auid, getActivity());
+                        ((LoginActivity)getActivity()).populateDataLocally(mRef, authData.getUid(), auid, getActivity());
                     }
 
                     @Override

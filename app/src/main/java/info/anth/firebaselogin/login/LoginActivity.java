@@ -77,7 +77,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        logout();
+        logoutLoginActivity(mRef,this);
 
         //TODO: (Optional) set password authentication providers (example set for google and password)
         //setEnabledAuthProvider(AuthProviderType.FACEBOOK);
@@ -133,7 +133,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     public void onFirebaseLoggedOut() {
         if(LOG_SHOW) Log.i(LOG_TAG, "Logged out");
         // Reset login shared preferences
-        clearLoginSharedPreferences(this);
+        //clearLoginSharedPreferences(this);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
                     auid[0] = (String) dataSnapshot.getValue();
                 }
                 // Populate the local data
-                populateDataLocally(mRef, auid[0], mActivity);
+                populateDataLocally(mRef, authData.getUid(), auid[0], mActivity);
             }
 
             @Override
@@ -305,56 +305,38 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         ref.child("userInfo/userMap").updateChildren(updateMap);
     }
 
-    public void populateDataLocally(Firebase ref, String auid, Activity activity) {
+    public void populateDataLocally(Firebase ref, final String uid, final String auid, final Activity activity) {
         // Reset login shared preferences
-        clearLoginSharedPreferences(activity);
-
-        SharedPreferences sharedPref = activity.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPref.edit();
-
-        // add auid
-        editor.putString(getString(R.string.preference_auid), auid);
-
         ref.child("userInfo/users").child(auid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @SuppressLint("CommitPrefEdits")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
 
                 if (dbUserInfo != null) {
-                    editor.putString(getString(R.string.preference_email), dbUserInfo.getEmail());
-                    editor.putString(getString(R.string.preference_display_name), dbUserInfo.getDisplayName());
-                    editor.putString(getString(R.string.preference_profile_image), dbUserInfo.getProfileImageUrl());
+                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,dbUserInfo.getEmail(),dbUserInfo.getProfileImageUrl(),dbUserInfo.getDisplayName());
+                    localUserInfo.saveValues(activity);
                 } else {
-                    editor.putString(getString(R.string.preference_display_name), getString(R.string.preference_missing_error));
+                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,null,getString(R.string.preference_missing_error));
+                    localUserInfo.saveValues(activity);
                 }
-                editor.commit();
                 // finish the login process once the listener is done
                 completeLogin();
             }
 
-            @SuppressLint("CommitPrefEdits")
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 // there was an error
-                editor.putString(getString(R.string.preference_display_name), firebaseError.getMessage());
-                editor.commit();
+                LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,null,firebaseError.getMessage());
+                localUserInfo.saveValues(activity);
                 // finish the login process once the listener is done
                 completeLogin();
             }
         });
     }
 
-    @SuppressLint("CommitPrefEdits")
-    public void clearLoginSharedPreferences(Activity activity){
-        SharedPreferences sharedPref = activity.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPref.edit();
-
-        // clear out current values
-        editor.remove(getString(R.string.preference_auid));
-        editor.remove(getString(R.string.preference_email));
-        editor.remove(getString(R.string.preference_display_name));
-        editor.remove(getString(R.string.preference_profile_image));
-        editor.commit();
+    public static void logoutLoginActivity(Firebase ref, Activity activity) {
+        ref.unauth();
+        LocalUserInfo localUserInfo = new LocalUserInfo(activity);
+        localUserInfo.clearValues(activity);
     }
 }

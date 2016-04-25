@@ -10,9 +10,12 @@ import android.util.Log;
 
 import com.firebase.client.Firebase;
 
+import info.anth.firebaselogin.login.LocalUserInfo;
 import info.anth.firebaselogin.login.LoginActivity;
 
 public class NewActivity extends AppCompatActivity {
+
+    public static final String LOG_TAG = NewActivity.class.getSimpleName();
 
     private Firebase mRef;
 
@@ -31,9 +34,15 @@ public class NewActivity extends AppCompatActivity {
         // Check if auth is set if it is not (returns null) start login activity
         if (mRef.getAuth()==null) startActivityForResult(new Intent(this, LoginActivity.class), LoginActivity.RESULT_REQUEST_CODE);
 
-        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String myPref = sharedPref.getString(getString(R.string.preference_display_name), getString(R.string.preference_display_name_default));
-        Log.i("ajc", "onResume Logout Display Name from SP: " + myPref);
+        LocalUserInfo user = new LocalUserInfo(this);
+        String message = "Logged In\n";
+        message += "UID: " + user.uid;
+        message += "\nAUID: " + user.auid;
+        message += "\nEmail: " + user.email;
+        message += "\nDisplay Name: " + user.displayName;
+        message += "\nprofileImageUrl: " + user.profileImageUrl;
+
+        Log.i(LOG_TAG, "onResume from Shared Preferences: " + message);
     }
 
     @Override
