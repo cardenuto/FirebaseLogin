@@ -42,7 +42,7 @@ Once the setup is complete, using the code is starting the LoginActivity. The Lo
 Implementation – MainActivity.java: 
 
     public void callLogin (View view) {
-        // Logout is logged in
+        // Logout if logged in
         if (mRef.getAuth() != null) callLogout(view);
         // call the login intent
          startActivity(new Intent(this, LoginActivity.class));
