@@ -14,6 +14,7 @@
 - Check for email already registered with another auth provider
 - Ability to change password
 - Option not to have user information saved (logging into a second database) - ability to have saved database by database
+- add including a unique device install ID
 
 ##Presence System
 Step 1 would be to define what does presence mean to the application. the code for onDisconnect works ok but it looks at the connection
