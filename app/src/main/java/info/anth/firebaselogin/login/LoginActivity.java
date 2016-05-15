@@ -39,6 +39,9 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     public static final Boolean LOG_SHOW = false;
 
     private Firebase mRef;
+    private static String pathUserMap;
+    private static String pathUsers;
+    private static String pathUserInfo;
     private LoginRegisterDialog loginRegisterDialog;
     private Context context;
     private Boolean creatingAccount;
@@ -54,6 +57,9 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         mRootView = findViewById(R.id.login_root);
 
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
+        pathUserMap = getResources().getString(R.string.FIREBASE_USER_MAP);
+        pathUsers = getResources().getString(R.string.FIREBASE_USERS);
+        pathUserInfo = getResources().getString(R.string.FIREBASE_USER_INFO);
         context = this;
         mActivity = this;
 
@@ -239,7 +245,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         final String[] auid = new String[1];
 
         // Check to see if they exist
-        mRef.child("userInfo/userMap").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child(pathUserMap).child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
@@ -248,8 +254,15 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
                 } else {
                     auid[0] = (String) dataSnapshot.getValue();
                 }
+                // Set the full path for local data
+                Firebase refFull;
+                if (pathUserInfo.isEmpty()) {
+                    refFull = mRef.child(pathUsers).child(auid[0]);
+                } else {
+                    refFull = mRef.child(pathUsers).child(auid[0]).child(pathUserInfo);
+                }
                 // Populate the local data
-                populateDataLocally(mRef, authData.getUid(), auid[0], mActivity);
+                populateDataLocally(refFull, authData.getUid(), auid[0], mActivity);
             }
 
             @Override
@@ -282,9 +295,15 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 
         // define users
         DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
-        Firebase pushUser = mRef.child("userInfo/users").push();
-        pushUser.setValue(newUserInfo);
-
+        Firebase pushUser = mRef.child(pathUsers).push();
+        // If the user added a grouping path add it
+        if (pathUserInfo.isEmpty()) {
+            // no path
+            pushUser.setValue(newUserInfo);
+        } else {
+            // path added
+            pushUser.child(pathUserInfo).setValue(newUserInfo);
+        }
         // define userMap
         populateUserMap(mRef, uid, pushUser.getKey());
 
@@ -302,21 +321,21 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
     public static void populateUserMap(Firebase ref, String uid, String auid) {
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put(uid, auid);
-        ref.child("userInfo/userMap").updateChildren(updateMap);
+        ref.child(pathUserMap).updateChildren(updateMap);
     }
 
-    public void populateDataLocally(Firebase ref, final String uid, final String auid, final Activity activity) {
+    public void populateDataLocally(Firebase refFull, final String uid, final String auid, final Activity activity) {
         // Reset login shared preferences
-        ref.child("userInfo/users").child(auid).addListenerForSingleValueEvent(new ValueEventListener() {
+        refFull.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);
 
                 if (dbUserInfo != null) {
-                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,dbUserInfo.getEmail(),dbUserInfo.getProfileImageUrl(),dbUserInfo.getDisplayName());
+                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,dbUserInfo.getEmail(),dbUserInfo.getDisplayName(),dbUserInfo.getProfileImageUrl());
                     localUserInfo.saveValues(activity);
                 } else {
-                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,null,getString(R.string.preference_missing_error));
+                    LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,getString(R.string.preference_missing_error),null);
                     localUserInfo.saveValues(activity);
                 }
                 // finish the login process once the listener is done
@@ -326,7 +345,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 // there was an error
-                LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,null,firebaseError.getMessage());
+                LocalUserInfo localUserInfo = new LocalUserInfo(uid,auid,null,firebaseError.getMessage(),null);
                 localUserInfo.saveValues(activity);
                 // finish the login process once the listener is done
                 completeLogin();

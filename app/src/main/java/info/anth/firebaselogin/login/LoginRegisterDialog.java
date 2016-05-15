@@ -34,6 +34,8 @@ public class LoginRegisterDialog extends DialogFragment {
     private static View mView;
     private static AlertDialog mDialog;
     private Firebase mRef;
+    private static String pathUsers;
+    private static String pathUserInfo;
     private Context context;
 
     private String email;
@@ -45,6 +47,8 @@ public class LoginRegisterDialog extends DialogFragment {
 
         mView = inflater.inflate(R.layout.dialog_login_register, null);
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
+        pathUsers = getResources().getString(R.string.FIREBASE_USERS);
+        pathUserInfo = getResources().getString(R.string.FIREBASE_USER_INFO);
         context = getActivity().getApplicationContext();
 
         builder.setView(mView)
@@ -122,9 +126,16 @@ public class LoginRegisterDialog extends DialogFragment {
                         // add data to UserInfo
                         String auid = addUserInfoPassword();
                         mDialog.dismiss();
+                        // Set the full path for local data
+                        Firebase refFull;
+                        if (pathUserInfo.isEmpty()) {
+                            refFull = mRef.child(pathUsers).child(auid);
+                        } else {
+                            refFull = mRef.child(pathUsers).child(auid).child(pathUserInfo);
+                        }
                         // Populate local data once the user is logged in and account is created
                         // The login process needs to be completed in populateDataLocally
-                        ((LoginActivity)getActivity()).populateDataLocally(mRef, authData.getUid(), auid, getActivity());
+                        ((LoginActivity)getActivity()).populateDataLocally(refFull, authData.getUid(), auid, getActivity());
                     }
 
                     @Override
@@ -190,8 +201,15 @@ public class LoginRegisterDialog extends DialogFragment {
 
         // define users
         DbUserInfo newUserInfo = new DbUserInfo(provider, email, profileImageUrl, displayName);
-        Firebase pushUser = mRef.child("userInfo/users").push();
-        pushUser.setValue(newUserInfo);
+        Firebase pushUser = mRef.child(pathUsers).push();
+        // If the user added a grouping path add it
+        if (pathUserInfo.isEmpty()) {
+            // no path
+            pushUser.setValue(newUserInfo);
+        } else {
+            // path added
+            pushUser.child(pathUserInfo).setValue(newUserInfo);
+        }
 
         // define userMap
         LoginActivity.populateUserMap(mRef, uid, pushUser.getKey());

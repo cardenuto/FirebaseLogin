@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     Firebase mRef;
+    private static String pathUserMap;
+    private static String pathUsers;
+    private static String pathUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         // setup the Firebase database reference
         mRef = new Firebase(getResources().getString(R.string.FIREBASE_BASE_REF));
+        pathUserMap = getResources().getString(R.string.FIREBASE_USER_MAP);
+        pathUsers = getResources().getString(R.string.FIREBASE_USERS);
+        pathUserInfo = getResources().getString(R.string.FIREBASE_USER_INFO);
 
         final TextView loginText = (TextView) findViewById(R.id.login_text);
 
@@ -44,13 +50,19 @@ public class MainActivity extends AppCompatActivity {
                     // if being created, the AUTH happens prior to adding the values to "users" in the database
                     // need to change this from addListenerForSingleValueEvent to addValueEventListener so we
                     // can capture when the "user" data is updated. Once it is updated remove this listener
-                    mRef.child("userInfo/userMap").child(uid).addValueEventListener(new ValueEventListener() {
+                    mRef.child(pathUserMap).child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 String auid = (String) dataSnapshot.getValue();
 
-                                mRef.child("userInfo/users").child(auid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                Firebase refFull;
+                                if (pathUserInfo.isEmpty()) {
+                                    refFull = mRef.child(pathUsers).child(auid);
+                                } else {
+                                    refFull = mRef.child(pathUsers).child(auid).child(pathUserInfo);
+                                }
+                                refFull.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         DbUserInfo dbUserInfo = dataSnapshot.getValue(DbUserInfo.class);

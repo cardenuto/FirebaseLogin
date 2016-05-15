@@ -22,15 +22,15 @@ public class LocalUserInfo {
     public String uid;
     public String auid;
     public String email;
-    public String profileImageUrl;
     public String displayName;
+    public String profileImageUrl;
 
-    public LocalUserInfo(String uid, String auid, String email, String profileImageUrl, String displayName) {
+    public LocalUserInfo(String uid, String auid, String email, String displayName, String profileImageUrl) {
         this.uid = uid;
         this.auid = auid;
         this.email = email;
-        this.profileImageUrl = profileImageUrl;
         this.displayName = displayName;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public LocalUserInfo(Activity activity) {
@@ -40,8 +40,8 @@ public class LocalUserInfo {
         this.uid = sharedPref.getString(fields.FIELD_UID, null);
         this.auid = sharedPref.getString(fields.FIELD_AUID, null);
         this.email = sharedPref.getString(fields.FIELD_EMAIL, rw.getString(R.string.preference_email_default));
-        this.profileImageUrl = sharedPref.getString(fields.FIELD_DISPLAY_NAME, rw.getString(R.string.preference_profile_image_default));
-        this.displayName = sharedPref.getString(fields.FIELD_PROFILE_IMAGE, rw.getString(R.string.preference_display_name_default));
+        this.displayName = sharedPref.getString(fields.FIELD_DISPLAY_NAME, rw.getString(R.string.preference_display_name_default));
+        this.profileImageUrl = sharedPref.getString(fields.FIELD_PROFILE_IMAGE, rw.getString(R.string.preference_profile_image_default));
     }
 
 

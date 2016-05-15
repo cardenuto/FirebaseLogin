@@ -4,6 +4,15 @@
     <!-- TODO: (Required) Add your Firebase database reference replace YOUR_DATABASE_NAME with the name of your database -->
     <string name="FIREBASE_BASE_REF">https://YOUR_DATABASE_NAME.firebaseio.com</string>
 
+    <!-- TODO: (Optional) change the user data path -->
+    <!-- location (off of the base reference) of the user map -->
+    <string name="FIREBASE_USER_MAP">userData/userMap</string>
+    <!-- location (off of the base reference) of the user ID (push) -->
+    <string name="FIREBASE_USERS">userData/users</string>
+    <!-- location (off of the FIREBASE_USERS) of the user login information -
+        leave empty for no grouping:  <string name="FIREBASE_USER_INFO"/> -->
+    <string name="FIREBASE_USER_INFO">userInfo</string>
+
     <!-- **** Start Shared Preference **** -->
 
     <!-- TODO: (Required) Change the preference_file_key for your application -->

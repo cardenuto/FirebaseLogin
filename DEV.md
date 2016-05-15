@@ -1,6 +1,10 @@
 #FirebaseLogin Development
 
-##Current 
+##Current
+- update gradle
+- change Firebase userInfo path to string for easy changing
+- add child path in order to group user information
+- fixed bug with local user save, problem with display name and profile image data being swapped (also reordered call)
 
 ##Future
 - Setting up a presence system
